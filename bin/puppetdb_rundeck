@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+#
+$:.unshift File.join(File.dirname(__FILE__), *%w[.. lib])
+
+require 'app'
+require 'optparse'
+
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: puppetdb_rundeck [options]"
+
+  opts.on("--port PORT", String, "The port on which to run the appllication") do |p|
+    options[:port] = p
+  end
+
+  opts.on("--pdbhost HOSTNAME", String, "The hostname of the PuppetDB instance") do |ph|
+    options[:pdbhost] = ph
+  end
+
+  opts.on("--pdbport PORT", String, "The port of the PuppetDB instance") do |pp|
+    options[:pdbport] = pp
+  end
+end.parse!
+
+if options[:pdbhost].nil? or options[:pdbhost].eql?('')
+  puts 'The --pdbhost option must be specified'
+  exit 1
+end
+
+if options[:pdbport].nil? or options[:pdbport].eql?('')
+  puts 'The --pdbport option must be specified'
+  exit 1
+end
+
+p "port is #{options[:port]}"
+
+PuppetDBRunDeck.set :puppetdb_host, options[:pdbhost]
+PuppetDBRunDeck.set :puppetdb_port, options[:pdbport]
+
+if options[:port].nil? or options[:port].eql?('')
+  PuppetDBRunDeck.set :port, '4567'
+else
+  PuppetDBRunDeck.set :port, options[:port]
+end
+
+PuppetDBRunDeck.run!
