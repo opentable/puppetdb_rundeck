@@ -1,22 +1,25 @@
+require_relative '../helpers/process'
+
 class YAMLOutput
   attr_accessor :tmp_file
 
-  def initialize(puppetdb_host, puppetdb_port)
+  def initialize(puppetdb_helper)
     @tmp_file = '/tmp/puppetdb-resource.yaml'
-    @db_helper = Helpers::PuppetDB.new(puppetdb_host, puppetdb_port)
+    @db_helper = puppetdb_helper
   end
 
   def parse
     nodes = @db_helper.get_nodes
-    facts = @db_helper.get_all_facts
+    facts = @db_helper.get_facts
+    helper = Helpers::Process.new
 
     rundeck_data = Hash.new
     nodes.each{|d|
-      host     = d['name']
+      host = d['name']
 
       rundeck_data[host] = Hash.new if not rundeck_data.key?(host)
 
-      rundeck_data = add_facts(facts, host, rundeck_data)
+      rundeck_data = helper.add_facts(facts, host, rundeck_data)
     }
 
     yaml = rundeck_data.to_yaml

@@ -1,7 +1,4 @@
 require 'rubygems'
-require 'net/http'
-require 'uri'
-require 'json'
 require 'yaml'
 require 'sinatra'
 require 'haml'
@@ -24,13 +21,21 @@ class PuppetDBRunDeck < Sinatra::Base
 
   get '/api/yaml' do
     content_type 'text/yaml'
-    output = YAMLOutput.new(settings.puppetdb_host, settings.puppetdb_port)
-    endpoint_processor(output)
+    puppetdb_helper = Helpers::PuppetDB.new(settings.puppetdb_host, settings.puppetdb_port)
+    output = YAMLOutput.new(puppetdb_helper)
+    Helpers::Process.new().endpoint_processor(output)
   end
 
   get '/api/xml' do
     content_type 'application/xml'
-    output = XMLOutput.new(settings.puppetdb_host, settings.puppetdb_port)
-    endpoint_processor(output)
+    puppetdb_helper = Helpers::PuppetDB.new(settings.puppetdb_host, settings.puppetdb_port)
+    output = XMLOutput.new(puppetdb_helper)
+    Helpers::Process.new().endpoint_processor(output)
   end
+end
+
+# This allows app.rb to be run in isolation without the need for the executable
+if (!defined? settings.puppetdb_host) and (!defined? settings.puppetdb_port)
+  PuppetDBRunDeck.set :puppetdb_host, 'localhost'
+  PuppetDBRunDeck.set :puppetdb_port, '8080'
 end

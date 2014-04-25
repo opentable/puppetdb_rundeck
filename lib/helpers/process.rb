@@ -1,64 +1,69 @@
 
-def number_to_name(name)
-  lookup = {
-      '1' => 'one', '2' => 'two', '3' => 'three', '4' => 'four', '5' => 'five',
-      '6' => 'six', '7' => 'seven', '8' => 'eight', '9' => 'nine', '10' => 'ten',
-      '11' => 'eleven', '12' => 'twelve', '13' => 'thirteen', '14' => 'fourteen',
-      '15' => 'fifteen', '16' => 'sixteen'
-  }
+class Helpers::Process
 
-  lookup.each { |k,v|
-    if name.include?(k)
-      name.gsub!(k,"_#{v}")
-    end
-  }
-  return name
-end
+  def add_facts(facts, host, collection)
+    facts.each{|f|
+      if f['certname'].eql?(host)
+        fact_name = f['name']
+        fact_value = f['value']
 
-def add_facts(facts, host, collection)
-  facts.each{|f|
-    if f['certname'].eql?(host)
-      fact_name = f['name']
-      fact_value = f['value']
+        if fact_name.include?('processor')
+          fact_name = number_to_name(fact_name)
+        end
 
-      if fact_name.include?('processor')
-        fact_name = number_to_name(fact_name)
+        if fact_name.include?('path')
+          fact_value = fact_value.gsub!('"','')
+        end
+
+        if collection.instance_of?(Hash)
+          collection[host][fact_name] = fact_value
+        elsif collection.instance_of?(Array)
+          collection << "#{fact_name}=\"#{fact_value}\" "
+        else
+        end
       end
+    }
+    return collection
+  end
 
-      if fact_name.include?('path')
-        fact_value = fact_value.gsub!('"','')
-      end
+  def endpoint_processor(output)
+    file_name = output.tmp_file
+    content = ''
+    if File.exist?(file_name)
+      file = File.new(file_name)
+      t_now = Time.at(Time.now.to_i)
+      t_file = Time.at(file.mtime.to_i)
 
-      if collection.instance_of?(Hash)
-        collection[host][fact_name] = fact_value
-      elsif collection.instance_of?(Array)
-        collection << "#{fact_name}=\"#{fact_value}\" "
+      if t_now < (t_file + 300)
+        content = File.new(file_name, 'r').read
       else
+        p "#{t_now} #{t_file}"
+        endpoint = EndPoint.new()
+        content = endpoint.parse(output)
       end
-    end
-  }
-  return collection
-end
-
-def endpoint_processor(output)
-  file_name = output.tmp_file
-  content = ''
-  if File.exist?(file_name)
-    file = File.new(file_name)
-    t_now = Time.at(Time.now.to_i)
-    t_file = Time.at(file.mtime.to_i)
-
-    if t_now < (t_file + 300)
-      content = File.new(file_name, 'r').read
     else
-      p "#{t_now} #{t_file}"
       endpoint = EndPoint.new()
       content = endpoint.parse(output)
     end
-  else
-    endpoint = EndPoint.new()
-    content = endpoint.parse(output)
+
+    return content
   end
 
-  return content
+  private
+    def number_to_name(name)
+      lookup = {
+        '1' => 'one', '2' => 'two', '3' => 'three', '4' => 'four', '5' => 'five',
+        '6' => 'six', '7' => 'seven', '8' => 'eight', '9' => 'nine', '10' => 'ten',
+        '11' => 'eleven', '12' => 'twelve', '13' => 'thirteen', '14' => 'fourteen',
+        '15' => 'fifteen', '16' => 'sixteen'
+      }
+
+      lookup.each { |k,v|
+        if name.include?(k)
+          name.gsub!(k,"_#{v}")
+        end
+      }
+      return name
+    end
+
 end
