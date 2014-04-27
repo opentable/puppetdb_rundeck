@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |spec|
   spec.name          = 'puppetdb_rundeck'
-  spec.version       = '0.2.0'
+  spec.version       = '0.2.1'
   spec.authors       = ['liamjbennett']
   spec.email         = ['lbennett@opentable.com']
   spec.summary       = %q{A sinatra based application to provide integration between PuppetDB and Rundeck}
@@ -26,6 +26,7 @@ with rundeck}
   spec.add_development_dependency 'rspec-mocks'
 
   spec.add_runtime_dependency 'json_pure', '~> 1.8'
+  spec.add_runtime_dependency 'tilt', '~> 1.3'
   spec.add_runtime_dependency 'sinatra', '~> 1.4'
   spec.add_runtime_dependency 'haml', '~> 4.0'
 end
