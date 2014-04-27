@@ -1,0 +1,5 @@
+2014-04-27 Release 0.2.0
+  - replaced json dependency with json_pure
+  
+2014-04-25 Release 0.1.0
+  - initial version
