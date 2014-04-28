@@ -3,7 +3,7 @@ require 'rack/test'
 require 'webmock/rspec'
 require 'rspec/mocks'
 
-require_relative '../spec/support/fake_puppetdb'
+require File.expand_path '../../spec/support/fake_puppetdb', __FILE__
 
 WebMock.disable_net_connect!(:allow_localhost => true)
 
