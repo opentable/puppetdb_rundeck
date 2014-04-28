@@ -3,12 +3,12 @@ require 'yaml'
 require 'sinatra'
 require 'haml'
 
-require_relative 'helpers/puppetdb'
-require_relative 'helpers/process'
+require File.expand_path('../helpers/puppetdb', __FILE__)
+require File.expand_path('../helpers/process', __FILE__)
 
-require_relative 'model/endpoint'
-require_relative 'model/xml'
-require_relative 'model/yaml'
+require File.expand_path('../model/endpoint', __FILE__)
+require File.expand_path('../model/xml', __FILE__)
+require File.expand_path('../model/yaml', __FILE__)
 
 class PuppetDBRunDeck < Sinatra::Base
   get '/' do

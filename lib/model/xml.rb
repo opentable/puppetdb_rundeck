@@ -1,4 +1,4 @@
-require_relative '../helpers/process'
+require File.expand_path('../../helpers/process', __FILE__)
 
 class XMLOutput
   attr_accessor :tmp_file
