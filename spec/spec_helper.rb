@@ -22,4 +22,8 @@ end
 RSpec.configure do |config|
   config.include Rack::Test::Methods
   config.mock_with :rspec
+
+  config.before(:all) do
+    WebMock.disable_net_connect!(:allow_localhost => true)
+  end
 end
