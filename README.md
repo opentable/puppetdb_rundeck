@@ -1,8 +1,11 @@
-     # PuppetDBRundeck
+# PuppetDB_Rundeck
 
 puppetdb_rundeck is a sinatra based application to provide integration between [PuppetDB](https://docs.puppetlabs.com/puppetdb/latest/) and [Rundeck](http://rundeck.org/).
 It provides an api in either xml or yaml that allows the node and fact data with puppetdb to use used as a resource
 with rundeck.
+
+[![Build
+Status](https://secure.travis-ci.org/opentable/puppetdb_rundeck.png)](https://secure.travis-ci.org/opentable/puppetdb_rundeck.png)
 
 ## Installation
 
