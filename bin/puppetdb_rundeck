@@ -33,6 +33,7 @@ if options[:pdbport].nil? or options[:pdbport].eql?('')
   exit 1
 end
 
+PuppetDBRunDeck.set :bind, '0.0.0.0'
 PuppetDBRunDeck.set :puppetdb_host, options[:pdbhost]
 PuppetDBRunDeck.set :puppetdb_port, options[:pdbport]
 
