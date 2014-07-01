@@ -18,7 +18,7 @@ with rundeck}
   spec.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_development_dependency 'bundler', '~> 1.5'
+  spec.add_development_dependency 'bundler', '~> 1.6'
   spec.add_development_dependency 'rake', '~> 10.2'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'rack-test'
