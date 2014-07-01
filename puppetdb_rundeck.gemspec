@@ -3,7 +3,7 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |spec|
   spec.name          = 'puppetdb_rundeck'
-  spec.version       = '0.3.0'
+  spec.version       = '0.3.1'
   spec.authors       = ['liamjbennett']
   spec.email         = ['lbennett@opentable.com']
   spec.summary       = %q{A sinatra based application to provide integration between PuppetDB and Rundeck}
