@@ -22,7 +22,7 @@ class EndPoint
     per_type_cache = "/tmp/puppetdb-resource.#{type}"
 
     THREAD_COUNT.times.map {
-      Thread.new(nodes, @rundeck_data) do |nodes|
+      Thread.new(nodes) do |nodes|
         while node = mutex.synchronize { nodes.pop }
           host = node['name']
           facts = @db_helper.get_facts(host)
