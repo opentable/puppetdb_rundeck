@@ -12,7 +12,7 @@ describe 'puppetdb_rundeck Application' do
   it 'should allow access to the main api page' do
     get '/api'
     last_response.should be_ok
-    last_response.body.should include('Two API endpoints are provided')
+    last_response.body.should include('Three API endpoints are provided')
   end
 
   it 'should allow access to the xml endpoint' do

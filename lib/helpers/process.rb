@@ -16,7 +16,12 @@ class Helpers::Process
         end
 
         if collection.instance_of?(Hash)
+          if collection[host].nil?
+            collection[host] = {}
+          end
+
           collection[host][fact_name] = fact_value
+
         elsif collection.instance_of?(Array)
           collection << "#{fact_name}=\"#{fact_value}\" "
         else
@@ -24,29 +29,6 @@ class Helpers::Process
       end
     }
     return collection
-  end
-
-  def endpoint_processor(output)
-    file_name = output.tmp_file
-    content = ''
-    if File.exist?(file_name)
-      file = File.new(file_name)
-      t_now = Time.at(Time.now.to_i)
-      t_file = Time.at(file.mtime.to_i)
-
-      if t_now < (t_file + 300)
-        content = File.new(file_name, 'r').read
-      else
-        p "#{t_now} #{t_file}"
-        endpoint = EndPoint.new()
-        content = endpoint.parse(output)
-      end
-    else
-      endpoint = EndPoint.new()
-      content = endpoint.parse(output)
-    end
-
-    return content
   end
 
   private

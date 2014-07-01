@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'yaml'
+require 'json'
 require 'sinatra'
 require 'haml'
 
@@ -7,10 +8,14 @@ require File.expand_path('../helpers/puppetdb', __FILE__)
 require File.expand_path('../helpers/process', __FILE__)
 
 require File.expand_path('../model/endpoint', __FILE__)
-require File.expand_path('../model/xml', __FILE__)
-require File.expand_path('../model/yaml', __FILE__)
 
 class PuppetDBRunDeck < Sinatra::Base
+  def initialize(app = nil, params = {})
+    super(app)
+    puppetdb_helper = Helpers::PuppetDB.new(settings.puppetdb_host, settings.puppetdb_port)
+    @endpoint = EndPoint.new(puppetdb_helper)
+  end
+
   get '/' do
     redirect to('/api')
   end
@@ -21,16 +26,25 @@ class PuppetDBRunDeck < Sinatra::Base
 
   get '/api/yaml' do
     content_type 'text/yaml'
-    puppetdb_helper = Helpers::PuppetDB.new(settings.puppetdb_host, settings.puppetdb_port)
-    output = YAMLOutput.new(puppetdb_helper)
-    Helpers::Process.new().endpoint_processor(output)
+    content = @endpoint.to_yaml()
   end
 
   get '/api/xml' do
     content_type 'application/xml'
-    puppetdb_helper = Helpers::PuppetDB.new(settings.puppetdb_host, settings.puppetdb_port)
-    output = XMLOutput.new(puppetdb_helper)
-    Helpers::Process.new().endpoint_processor(output)
+    content = @endpoint.to_xml()
+  end
+
+  get '/api/json' do
+    content_type 'application/json'
+    content = @endpoint.to_json()
+  end
+
+  get '/cache' do
+    haml :cache
+  end
+
+  get '/cache/clear' do
+    @endpoint.clear_cache
   end
 end
 

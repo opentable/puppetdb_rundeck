@@ -1,3 +1,8 @@
+2014-07-01 Release 0.3.0
+  - improved performance for large instances of puppetdb
+  - added 30 min cache with api for clearing cache
+  - added json output
+
 2014-04-29 Release 0.2.3
   - adding sinartra binding
 
