@@ -14,6 +14,10 @@ class Helpers::Process
         if fact_name.include?('path')
           fact_value = fact_value.gsub!('"','')
         end
+        
+        if fact_name.include?('hostname')
+          fact_value = host
+        end
 
         if collection.instance_of?(Hash)
           if collection[host].nil?
