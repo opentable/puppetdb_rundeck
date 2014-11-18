@@ -21,6 +21,14 @@ OptionParser.new do |opts|
   opts.on("--pdbport PORT", String, "The port of the PuppetDB instance") do |pp|
     options[:pdbport] = pp
   end
+
+  opts.on("--cache-timeout TIMEOUT", Integer, "The number of seconds to cache the results from puppetdb") do |ct|
+    options[:cache_timeout] = ct
+  end
+
+  opts.on("--thread-count THREADS", Integer, "Limit the number of threads used by the application when communicating with PuppetDB") do |tc|
+    options[:thread_count] = tc
+  end
 end.parse!
 
 if options[:pdbhost].nil? or options[:pdbhost].eql?('')
@@ -36,6 +44,8 @@ end
 PuppetDBRunDeck.set :bind, '0.0.0.0'
 PuppetDBRunDeck.set :puppetdb_host, options[:pdbhost]
 PuppetDBRunDeck.set :puppetdb_port, options[:pdbport]
+PuppetDBRunDeck.set :cache_timeout, options[:cache_timeout]
+PuppetDBRunDeck.set :thread_count, options[:thread_count]
 
 if options[:port].nil? or options[:port].eql?('')
   PuppetDBRunDeck.set :port, '4567'

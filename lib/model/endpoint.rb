@@ -3,11 +3,12 @@ require File.expand_path('../../helpers/process', __FILE__)
 class EndPoint
 
   attr_accessor :cache_timeout
-  THREAD_COUNT = 40
+  attr_accessor :thread_count
 
-  def initialize(puppetdb_helper)
+  def initialize(puppetdb_helper, cache_timeout, thread_count)
     @db_helper = puppetdb_helper
-    @cache_timeout = 1800
+    @cache_timeout = cache_timeout
+    @thread_count = thread_count
   end
 
   def reload(type)
@@ -21,7 +22,7 @@ class EndPoint
 
     per_type_cache = "/tmp/puppetdb-resource.#{type}"
 
-    THREAD_COUNT.times.map {
+    @thread_count.times.map {
       Thread.new(nodes) do |nodes|
         while node = mutex.synchronize { nodes.pop }
           host = node['name']
