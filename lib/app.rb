@@ -26,17 +26,17 @@ class PuppetDBRunDeck < Sinatra::Base
 
   get '/api/yaml' do
     content_type 'text/yaml'
-    content = @endpoint.to_yaml()
+    content = @endpoint.to_yaml(true)
   end
 
   get '/api/xml' do
     content_type 'application/xml'
-    content = @endpoint.to_xml()
+    content = @endpoint.to_xml(true)
   end
 
   get '/api/json' do
     content_type 'application/json'
-    content = @endpoint.to_json()
+    content = @endpoint.to_json(true)
   end
 
   get '/cache' do

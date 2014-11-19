@@ -3,12 +3,12 @@ $:.push File.expand_path("../lib", __FILE__)
 
 Gem::Specification.new do |spec|
   spec.name          = 'puppetdb_rundeck'
-  spec.version       = '0.3.1'
+  spec.version       = '1.0.0'
   spec.authors       = ['liamjbennett']
   spec.email         = ['lbennett@opentable.com']
   spec.summary       = %q{A sinatra based application to provide integration between PuppetDB and Rundeck}
   spec.description   = %q{puppetdb_rundeck is a sinatra based application to provide integration between PuppetDB and Rundeck.
-It provides an api in either xml or yaml that allows the node and fact data with puppetdb to use used as a resource
+It provides an api in either xml, json or yaml that allows the node and fact data with puppetdb to use used as a resource
 with rundeck}
   spec.homepage      = 'https://github.com/opentable/puppetdb_rundeck'
   spec.license       = 'MIT'

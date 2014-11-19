@@ -32,9 +32,7 @@ module Helpers
       else
         fact_endpoint = "http://#{@puppetdb_host}:#{@puppetdb_port}/v3/facts"
       end
-
-      #p "requesting facts by: #{fact_endpoint}"
-
+      
       uri = URI.parse(fact_endpoint)
       request = Net::HTTP::Get.new(uri.path)
       request.add_field('Accept', 'application/json')

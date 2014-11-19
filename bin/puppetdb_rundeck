@@ -53,4 +53,16 @@ else
   PuppetDBRunDeck.set :port, options[:port]
 end
 
+if options[:cache_timeout].nil? or options[:cache_timeout].eql?('')
+  PuppetDBRunDeck.set :cache_timeout, 30
+else
+  PuppetDBRunDeck.set :cache_timeout, options[:cache_timeout]
+end
+
+if options[:thread_count].nil? or options[:thread_count].eql?('')
+  PuppetDBRunDeck.set :thread_count, 3
+else
+  PuppetDBRunDeck.set :thread_count, options[:thread_count]
+end
+
 PuppetDBRunDeck.run!

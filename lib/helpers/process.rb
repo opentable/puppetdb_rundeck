@@ -1,55 +1,45 @@
 
 class Helpers::Process
 
-  def add_facts(facts, host, collection)
+  def add_facts(facts, host)
+
+    fact_collection = { host => {} }
     facts.each{|f|
       if f['certname'].eql?(host)
         fact_name = f['name']
         fact_value = f['value']
 
-        if fact_name.include?('processor')
-          fact_name = number_to_name(fact_name)
-        end
-
-        if fact_name.include?('path')
-          fact_value = fact_value.gsub!('"','')
-        end
-        
         if fact_name.include?('hostname')
           fact_value = host
         end
 
-        if collection.instance_of?(Hash)
-          if collection[host].nil?
-            collection[host] = {}
-          end
-
-          collection[host][fact_name] = fact_value
-
-        elsif collection.instance_of?(Array)
-          collection << "#{fact_name}=\"#{fact_value}\" "
-        else
+        if !is_excluded?(fact_name)
+          fact_collection[host][fact_name] = fact_value
         end
+
       end
     }
-    return collection
+    return fact_collection
   end
 
-  private
-    def number_to_name(name)
-      lookup = {
-        '1' => 'one', '2' => 'two', '3' => 'three', '4' => 'four', '5' => 'five',
-        '6' => 'six', '7' => 'seven', '8' => 'eight', '9' => 'nine', '10' => 'ten',
-        '11' => 'eleven', '12' => 'twelve', '13' => 'thirteen', '14' => 'fourteen',
-        '15' => 'fifteen', '16' => 'sixteen'
-      }
+  def is_excluded?(fact)
 
-      lookup.each { |k,v|
-        if name.include?(k)
-          name.gsub!(k,"_#{v}")
-        end
-      }
-      return name
+    excluded_facts = [
+      '^processor(s|\d+)$', '^path$', '^utc_offset$', '^os$',
+      '^ec2_metrics_vhostmd$', '^ec2_network_interfaces_macs.*',
+      '^ec2_userdata$', '^ec2_metadata$',
+      '^partitions$', '^system_uptime$', '^apt_package_updates$'
+    ]
+
+    match = false
+    for ex in excluded_facts
+      if fact.match(ex)
+        match = true
+        break;
+      end
     end
+
+    return match
+  end
 
 end
