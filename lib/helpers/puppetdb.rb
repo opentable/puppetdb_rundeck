@@ -52,5 +52,42 @@ module Helpers
       end
     end
 
+    def get_tags(node=nil)
+      class_query = '["=", "type", "Class"]'
+
+      if node
+        certname_query = '["=", "certname", "' + node + '"]'
+        query = { 'query' => '["and", %s, %s]' % [class_query, certname_query] }
+      else
+        query = { 'query' => class_query }
+      end
+
+      endpoint = "http://#{@puppetdb_host}:#{@puppetdb_port}/v3/resources"
+      
+      uri = URI.parse(endpoint)
+      request = Net::HTTP::Get.new(uri.path)
+      request.set_form_data(query)
+
+      request = Net::HTTP::Get.new(uri.path + '?' + request.body)
+      request.add_field('Accept', 'application/json')
+
+      http_client = Net::HTTP.new(uri.host, uri.port)
+
+      begin
+        tags = []
+        response = http_client.request(request)
+        response['Content-Type'] = 'application/json'
+
+        if response.code == '200'
+          resource_data = JSON.parse(response.body)
+          resource_data.each { |resource| tags << resource['title'] }
+        end
+
+        return tags
+      rescue Timeout::Error
+
+      end
+    end
+
   end
 end

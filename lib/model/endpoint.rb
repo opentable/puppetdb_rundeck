@@ -35,9 +35,17 @@ class EndPoint
         while node = mutex.synchronize { @nodes.pop }
           host = node['name']
           facts = @db_helper.get_facts(host)
+          
           if !facts.nil?
+            host_data = helper.add_facts(facts, host)
+            tags = @db_helper.get_tags(host)
+
+            if !tags.nil?
+              host_data[host]['tags'] = tags.join(',') 
+            end
+
             mutex.synchronize do
-              data_elements.push(helper.add_facts(facts, host))
+              data_elements.push(host_data)
             end
           end
         end
