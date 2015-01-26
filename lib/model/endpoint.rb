@@ -7,10 +7,11 @@ class EndPoint
   attr_accessor :cache_timeout
   attr_accessor :thread_count
 
-  def initialize(puppetdb_helper, cache_timeout, thread_count)
+  def initialize(puppetdb_helper, cache_timeout, thread_count, short_nodenames)
     @db_helper = puppetdb_helper
     @cache_timeout = cache_timeout
     @thread_count = thread_count
+    @short_nodenames = short_nodenames
   end
 
   def reload(type)
@@ -42,6 +43,13 @@ class EndPoint
 
             if !tags.nil?
               host_data[host]['tags'] = tags.join(',') 
+            end
+
+            if @short_nodenames && host.include?('.')
+              puts 'doing it...'
+              shortname = host.split('.')[0]
+              host_data[shortname] = host_data[host]
+              host_data.delete(host)
             end
 
             mutex.synchronize do
