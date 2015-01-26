@@ -46,7 +46,6 @@ class EndPoint
             end
 
             if @short_nodenames && host.include?('.')
-              puts 'doing it...'
               shortname = host.split('.')[0]
               host_data[shortname] = host_data[host]
               host_data.delete(host)
