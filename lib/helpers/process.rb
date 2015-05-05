@@ -14,12 +14,20 @@ class Helpers::Process
         end
 
         if !is_excluded?(fact_name)
-          fact_collection[host][fact_name] = fact_value
+          fact_collection[host][fact_name] = encode_fact(fact_value)
         end
 
       end
     }
     return fact_collection
+  end
+
+  def encode_fact(fact)
+    encoded = fact.gsub(/\n/,'&#10;')
+    encoded.gsub!(/\s/,'&#032;')
+    encoded.gsub!(/\t/,'&#009;')
+    encoded.gsub!(/\"/,'&quot;')
+    return encoded
   end
 
   def is_excluded?(fact)
