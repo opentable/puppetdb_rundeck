@@ -36,12 +36,17 @@ class EndPoint
         while node = mutex.synchronize { @nodes.pop }
           host = node['name']
           facts = @db_helper.get_facts(host)
-          
-          if !facts.nil?
+
+          if !facts.nil? && !facts.empty?
             host_data = helper.add_facts(facts, host)
+
+            # This should never happen, but I've seen it.
+            # Rundeck will choke on nodes without a 'hostname'.
+            host_data[host]['hostname'] = 'UNKNOWN' if !host_data[host]['hostname']
+
             tags = @db_helper.get_tags(host)
 
-            if !tags.nil?
+            if !tags.nil? && !tags.empty?
               host_data[host]['tags'] = tags.join(',') 
             end
 
