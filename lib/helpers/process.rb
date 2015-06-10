@@ -28,7 +28,8 @@ class Helpers::Process
       '^processor(s|\d+)$', '^path$', '^utc_offset$', '^os$',
       '^ec2_metrics_vhostmd$', '^ec2_network_interfaces_macs.*',
       '^ec2_userdata$', '^ec2_metadata$',
-      '^partitions$', '^system_uptime$', '^apt_package_updates$'
+      '^partitions$', '^system_uptime$', '^apt_package_updates$',
+      '^ec2_public_keys_.*', '^sshfp_.*', '^ssh.*key$', '^.*serialnumber$'
     ]
 
     match = false
