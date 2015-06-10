@@ -29,7 +29,8 @@ class Helpers::Process
       '^ec2_metrics_vhostmd$', '^ec2_network_interfaces_macs.*',
       '^ec2_userdata$', '^ec2_metadata$',
       '^partitions$', '^system_uptime$', '^apt_package_updates$',
-      '^ec2_public_keys_.*', '^sshfp_.*', '^ssh.*key$', '^.*serialnumber$'
+      '^.*serialnumber$', '^ssh.*key$', '^sshfp_.*', 
+      '^ec2_public_keys_.*', '^ecs_iam_info_.*',
     ]
 
     match = false
