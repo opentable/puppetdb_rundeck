@@ -29,6 +29,12 @@ OptionParser.new do |opts|
   opts.on("--thread-count THREADS", Integer, "Limit the number of threads used by the application when communicating with PuppetDB") do |tc|
     options[:thread_count] = tc
   end
+
+  options[:short_nodenames] = false
+  opts.on("--short-nodenames true|false", String, "Use short node names (i.e. remove domain from hostnames") do |sn|
+    options[:short_nodenames] = 'true'.eql?(sn)
+  end
+
 end.parse!
 
 if options[:pdbhost].nil? or options[:pdbhost].eql?('')
@@ -46,6 +52,7 @@ PuppetDBRunDeck.set :puppetdb_host, options[:pdbhost]
 PuppetDBRunDeck.set :puppetdb_port, options[:pdbport]
 PuppetDBRunDeck.set :cache_timeout, options[:cache_timeout]
 PuppetDBRunDeck.set :thread_count, options[:thread_count]
+PuppetDBRunDeck.set :short_nodenames, options[:short_nodenames]
 
 if options[:port].nil? or options[:port].eql?('')
   PuppetDBRunDeck.set :port, '4567'

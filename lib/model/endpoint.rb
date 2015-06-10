@@ -7,10 +7,11 @@ class EndPoint
   attr_accessor :cache_timeout
   attr_accessor :thread_count
 
-  def initialize(puppetdb_helper, cache_timeout, thread_count)
+  def initialize(puppetdb_helper, cache_timeout, thread_count, short_nodenames)
     @db_helper = puppetdb_helper
     @cache_timeout = cache_timeout
     @thread_count = thread_count
+    @short_nodenames = short_nodenames
   end
 
   def reload(type)
@@ -35,9 +36,28 @@ class EndPoint
         while node = mutex.synchronize { @nodes.pop }
           host = node['name']
           facts = @db_helper.get_facts(host)
-          if !facts.nil?
+
+          if !facts.nil? && !facts.empty?
+            host_data = helper.add_facts(facts, host)
+
+            # This should never happen, but I've seen it.
+            # Rundeck will choke on nodes without a 'hostname'.
+            host_data[host]['hostname'] = 'UNKNOWN' if !host_data[host]['hostname']
+
+            tags = @db_helper.get_tags(host)
+
+            if !tags.nil? && !tags.empty?
+              host_data[host]['tags'] = tags.join(',') 
+            end
+
+            if @short_nodenames && host.include?('.')
+              shortname = host.split('.')[0]
+              host_data[shortname] = host_data[host]
+              host_data.delete(host)
+            end
+
             mutex.synchronize do
-              data_elements.push(helper.add_facts(facts, host))
+              data_elements.push(host_data)
             end
           end
         end

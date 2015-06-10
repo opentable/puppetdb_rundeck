@@ -13,7 +13,7 @@ class PuppetDBRunDeck < Sinatra::Base
   def initialize(app = nil, params = {})
     super(app)
     puppetdb_helper = Helpers::PuppetDB.new(settings.puppetdb_host, settings.puppetdb_port)
-    @endpoint = EndPoint.new(puppetdb_helper, settings.cache_timeout, settings.thread_count)
+    @endpoint = EndPoint.new(puppetdb_helper, settings.cache_timeout, settings.thread_count, settings.short_nodenames)
   end
 
   get '/' do

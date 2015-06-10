@@ -16,6 +16,8 @@ set :logging, false
 def app
   PuppetDBRunDeck.set :puppetdb_host, 'puppetdb'
   PuppetDBRunDeck.set :puppetdb_port, '8080'
+  PuppetDBRunDeck.set :cache_timeout, 30
+  PuppetDBRunDeck.set :thread_count, 3
   PuppetDBRunDeck
 end
 
