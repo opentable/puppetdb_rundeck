@@ -12,7 +12,7 @@ require File.expand_path('../model/endpoint', __FILE__)
 class PuppetDBRunDeck < Sinatra::Base
   def initialize(app = nil, params = {})
     super(app)
-    puppetdb_helper = Helpers::PuppetDB.new(settings.puppetdb_host, settings.puppetdb_port)
+    puppetdb_helper = Helpers::PuppetDB.new(settings.puppetdb_host, settings.puppetdb_port, settings.puppetdb_api_version)
     @endpoint = EndPoint.new(puppetdb_helper, settings.cache_timeout, settings.thread_count)
   end
 
