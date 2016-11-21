@@ -8,61 +8,72 @@ require 'optparse'
 
 options = {}
 OptionParser.new do |opts|
-  opts.banner = "Usage: puppetdb_rundeck [options]"
+	opts.banner = "Usage: puppetdb_rundeck [options]"
 
-  opts.on("--port PORT", String, "The port on which to run the appllication") do |p|
-    options[:port] = p
-  end
+	opts.on("--port PORT", String, "The port on which to run the appllication") do |p|
+		options[:port] = p
+	end
 
-  opts.on("--pdbhost HOSTNAME", String, "The hostname of the PuppetDB instance") do |ph|
-    options[:pdbhost] = ph
-  end
+	opts.on("--pdbhost HOSTNAME", String, "The hostname of the PuppetDB instance") do |ph|
+		options[:pdbhost] = ph
+	end
 
-  opts.on("--pdbport PORT", String, "The port of the PuppetDB instance") do |pp|
-    options[:pdbport] = pp
-  end
+	opts.on("--pdbport PORT", String, "The port of the PuppetDB instance") do |pp|
+		options[:pdbport] = pp
+	end
 
-  opts.on("--cache-timeout TIMEOUT", Integer, "The number of seconds to cache the results from puppetdb") do |ct|
-    options[:cache_timeout] = ct
-  end
+	opts.on("--pdbapiversion PORT", String, "The API version of the PuppetDB instance") do |pa|
+		options[:pdbapiversion] = pa
+	end
 
-  opts.on("--thread-count THREADS", Integer, "Limit the number of threads used by the application when communicating with PuppetDB") do |tc|
-    options[:thread_count] = tc
-  end
+	opts.on("--cache-timeout TIMEOUT", Integer, "The number of seconds to cache the results from puppetdb") do |ct|
+		options[:cache_timeout] = ct
+	end
+
+	opts.on("--thread-count THREADS", Integer, "Limit the number of threads used by the application when communicating with PuppetDB") do |tc|
+		options[:thread_count] = tc
+	end
 end.parse!
 
 if options[:pdbhost].nil? or options[:pdbhost].eql?('')
-  puts 'The --pdbhost option must be specified'
-  exit 1
+	puts 'The --pdbhost option must be specified'
+	exit 1
 end
 
 if options[:pdbport].nil? or options[:pdbport].eql?('')
-  puts 'The --pdbport option must be specified'
-  exit 1
+	puts 'The --pdbport option must be specified'
+	exit 1
 end
 
 PuppetDBRunDeck.set :bind, '0.0.0.0'
 PuppetDBRunDeck.set :puppetdb_host, options[:pdbhost]
 PuppetDBRunDeck.set :puppetdb_port, options[:pdbport]
+PuppetDBRunDeck.set :puppetdb_api_version, options[:pdbapiversion]
 PuppetDBRunDeck.set :cache_timeout, options[:cache_timeout]
 PuppetDBRunDeck.set :thread_count, options[:thread_count]
 
 if options[:port].nil? or options[:port].eql?('')
-  PuppetDBRunDeck.set :port, '4567'
+	PuppetDBRunDeck.set :port, '4567'
 else
-  PuppetDBRunDeck.set :port, options[:port]
+	PuppetDBRunDeck.set :port, options[:port]
 end
 
 if options[:cache_timeout].nil? or options[:cache_timeout].eql?('')
-  PuppetDBRunDeck.set :cache_timeout, 30
+	PuppetDBRunDeck.set :cache_timeout, 30
 else
-  PuppetDBRunDeck.set :cache_timeout, options[:cache_timeout]
+	PuppetDBRunDeck.set :cache_timeout, options[:cache_timeout]
 end
 
 if options[:thread_count].nil? or options[:thread_count].eql?('')
-  PuppetDBRunDeck.set :thread_count, 3
+	PuppetDBRunDeck.set :thread_count, 3
 else
-  PuppetDBRunDeck.set :thread_count, options[:thread_count]
+	PuppetDBRunDeck.set :thread_count, options[:thread_count]
+end
+
+if options[:pdbapiversion].nil? or options[:pdbapiversion].eql?('')
+	PuppetDBRunDeck.set :puppetdb_api_version, '3'
+else
+	PuppetDBRunDeck.set :puppetdb_api_version, options[:pdbapiversion]
 end
 
 PuppetDBRunDeck.run!

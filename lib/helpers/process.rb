@@ -23,7 +23,7 @@ class Helpers::Process
   end
 
   def encode_fact(fact)
-    encoded = fact.gsub(/\n/,'&#10;')
+    encoded = fact.to_s.gsub(/\n/,'&#10;')
     encoded.gsub!(/\s/,'&#032;')
     encoded.gsub!(/\t/,'&#009;')
     encoded.gsub!(/\"/,'&quot;')

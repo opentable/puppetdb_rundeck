@@ -8,14 +8,16 @@ module Helpers
     def initialize(host, port, api_version)
       @puppetdb_host = host
       @puppetdb_port = port
-      @api_version = api_version
-      if api_version == 3
-        @base_url = "http://#{@puppetdb_host}:#{@puppetdb_port}/v3"
-      elsif api_version == 4
-        @base_url = "http://#{@puppetdb_host}:#{@puppetdb_port}/pdb/query/v4"
-      else
-        raise "Unknown version"
-      end
+      @api_version = api_version.to_s
+      @api_endpoint = case @api_version
+                      when '3'
+                        'v3'
+                      when '4'
+                        'pdb/query/v4'
+                      else
+                        raise "Unknown version"
+                      end
+      @base_url = "http://#{@puppetdb_host}:#{@puppetdb_port}/#{@api_endpoint}"
     end
 
     def get_nodes
@@ -30,6 +32,7 @@ module Helpers
       else
         nodes = []
       end
+      nodes.each{|node| node['name'] ||= node['certname']}
 
       return nodes
     end
@@ -40,7 +43,7 @@ module Helpers
       else
         fact_endpoint = "#{@base_url}/facts"
       end
-      
+
       uri = URI.parse(fact_endpoint)
       request = Net::HTTP::Get.new(uri.path)
       request.add_field('Accept', 'application/json')
