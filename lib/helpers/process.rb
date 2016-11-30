@@ -13,7 +13,7 @@ class Helpers::Process
           fact_value = host
         end
 
-        if !is_excluded?(fact_name)
+        if fact_value.is_a?(String) and !is_excluded?(fact_name)
           fact_collection[host][fact_name] = encode_fact(fact_value)
         end
 
