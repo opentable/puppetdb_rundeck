@@ -5,13 +5,23 @@ require 'json'
 module Helpers
   class PuppetDB
 
-    def initialize(host, port)
+    def initialize(host, port, api_version)
       @puppetdb_host = host
       @puppetdb_port = port
+      @api_version = api_version.to_s
+      @api_endpoint = case @api_version
+                      when '3'
+                        'v3'
+                      when '4'
+                        'pdb/query/v4'
+                      else
+                        raise "Unknown version"
+                      end
+      @base_url = "http://#{@puppetdb_host}:#{@puppetdb_port}/#{@api_endpoint}"
     end
 
     def get_nodes
-      uri = URI.parse( "http://#{@puppetdb_host}:#{@puppetdb_port}/v3/nodes" )
+      uri = URI.parse( "#{@base_url}/nodes" )
       request = Net::HTTP::Get.new(uri.path)
       request.add_field('Accept', 'application/json')
       http_client = Net::HTTP.new(uri.host, uri.port)
@@ -22,17 +32,18 @@ module Helpers
       else
         nodes = []
       end
+      nodes.each{|node| node['name'] ||= node['certname']}
 
       return nodes
     end
 
     def get_facts(node=nil)
       if node
-        fact_endpoint = "http://#{@puppetdb_host}:#{@puppetdb_port}/v3/nodes/#{node}/facts"
+        fact_endpoint = "#{@base_url}/nodes/#{node}/facts"
       else
-        fact_endpoint = "http://#{@puppetdb_host}:#{@puppetdb_port}/v3/facts"
+        fact_endpoint = "#{@base_url}/facts"
       end
-      
+
       uri = URI.parse(fact_endpoint)
       request = Net::HTTP::Get.new(uri.path)
       request.add_field('Accept', 'application/json')
